@@ -52,12 +52,31 @@ namespace KUBIZATOR
             /// </summary>
             public List<Point3D> Verts = new List<Point3D>();
             /// <summary>
-            /// массив полигонов, состояших из 3 вершин
+            /// массив полигонов, состояших из n вершин
             /// </summary>
-            public List<Point3D> Polys = new List<Point3D>();
-            public int PolysDimension(string path)
+            public List<List<int>> Polys = new List<List<int>>();
+            /// <summary>
+            /// максимальное число вершин в полигоне
+            /// </summary>
+            /// <param name="path">Путь к файлу</param>
+            /// <returns></returns>
+            public int PolysMaxDimension(string path)
             {
-                return 0;
+                int ReturnValue = 0;
+                string []lines =File.ReadAllLines(path);
+                foreach(string line in lines)
+                {
+                    if (line.ToLower().StartsWith("f"))
+                    {
+                        var vx = line.Split(' ').Skip(1).Select(v => Int32.Parse(v)).ToArray();
+                        if(vx.Length > ReturnValue)
+                        {
+                            ReturnValue = vx.Length;
+                        }
+                    }
+
+                }
+                return ReturnValue;
             }
 
             /// <summary>
@@ -66,27 +85,38 @@ namespace KUBIZATOR
             /// <param name="Path">Путь к obj файлу</param>
             public void LoadModel(string Path)
             {
-                switch
                 Verts.Clear(); Polys.Clear();
-                string[] Lines = File.ReadAllLines(Path);
-                foreach (string Line in Lines)
+                switch (PolysMaxDimension(Path))
                 {
-                    //если строка начинается с v, то записываем новую вершину в массив
-                    if (Line.ToLower().StartsWith("v"))
-                    {
-                        var vx =Line.Split(' ').Skip(1).Select(v=>Double.Parse(v.Replace(".",","))).ToArray();
-                        Verts.Add(new Point3D(vx[0],vx[1],vx[2]));
-                    }
-                    //если строка описывает полигон
-                    if (Line.ToLower().StartsWith("f"))
-                    {
-                     
-                        var vx = Line.Split(' ').Skip(1).Select(v => Double.Parse(v.Replace(".", ","))).ToArray();
+                    case 3://максимальное число вершин в полигоне 3
+                        string[] Lines = File.ReadAllLines(Path);
+                        foreach (string Line in Lines)
+                        {
+                            //если строка начинается с v, то записываем новую вершину в массив
+                            if (Line.ToLower().StartsWith("v"))
+                            {
+                                var vx = Line.Split(' ').Skip(1).Select(v => Double.Parse(v.Replace(".", ","))).ToArray();
+                                Verts.Add(new Point3D(vx[0], vx[1], vx[2]));
+                            }
+                            //если строка описывает полигон
+                            else if (Line.ToLower().StartsWith("f"))
+                            {
 
-                    }
+                                var vx = Line.Split(' ').Skip(1).Select(v => Int32.Parse(v)).ToArray();
+                                //polygons.Add(new Tuple<int, int, int>(vx[0], vx[1], vx[2]));
+                                Polys.Add(new List<int> { vx[0], vx[1], vx[2] });
+                            }
 
+
+                        }
+                        break;
+                    case 4://максимальное число вершин в полигоне 4
+                        break;
+                    default://всё остальное
+                        break;
 
                 }
+                
             }
         }
     }
