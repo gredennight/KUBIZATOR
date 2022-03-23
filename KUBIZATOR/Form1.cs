@@ -19,7 +19,9 @@ namespace KUBIZATOR
         {
             InitializeComponent();
             Console output = new Console(richTextBox1);
-            string path = "C:\\Users\\grede\\Downloads\\untitled.obj";
+            string path = "C:\\Users\\grede\\Downloads\\1.obj";
+
+            //string path = "C:\\Users\\grede\\Downloads\\untitled.obj";
             MeshContainer meshContainer = new MeshContainer();
             meshContainer.LoadModel(path);
             /*
@@ -41,7 +43,7 @@ namespace KUBIZATOR
             output.WriteLog(point.ToString());
             */
             //meshContainer.GetSize();
-            meshContainer.GridSize = 256;
+            meshContainer.GridSize = 100;
             //output.WriteLog( meshContainer.Voxelize());
             /*
             DrawImage.DrawArray(Color.Green,0);

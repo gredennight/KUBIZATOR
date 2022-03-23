@@ -172,7 +172,7 @@ namespace KUBIZATOR
             int count = 0;
             while (count < Polys.Count)//пока не пройдём каждый элемент в массиве полигонов
             {
-                while (MaxLenght(Polys[count]) >= step/2)//пока длины сторон полигонов больше стороны куба разрезаем их
+                while (MaxLenght(Polys[count]) >= step)//пока длины сторон полигонов больше стороны куба разрезаем их
                 {
                     SubdivideTriangle(count);//смешная нарезка полигонов
                 }
@@ -248,6 +248,43 @@ namespace KUBIZATOR
             Point3D B1 = Point3D.getMedianPoint(B, C);
             Point3D C1 = Point3D.getMedianPoint(C, A);
 
+            //поиск точек пересечения среди уже имеющихся
+            /*
+            #region
+            int a1,b1,c1;
+            a1 = Verts.IndexOf(A1);
+            b1 = Verts.IndexOf(B1);
+            c1 = Verts.IndexOf(C1);
+
+            if (a1 == -1)
+            {
+                this.Verts.Add(A1);
+                a1 = Verts.Count;
+            }
+            if (b1 == -1)
+            {
+                this.Verts.Add(B1);
+                b1 = Verts.Count;
+            }
+            if (c1 == -1)
+            {
+                this.Verts.Add(C1);
+                c1 = Verts.Count;
+            }
+            #endregion
+
+            //перезаписываем точки B и C в исходном полигоне
+            this.Polys[index][1] = a1;
+            this.Polys[index][2] = c1;
+
+            //дописываем оставшиеся три полигона
+            this.Polys.Add(new List<int> { a1, b1, c1 });
+            this.Polys.Add(new List<int> { a1, b, b1 });
+            this.Polys.Add(new List<int> { c1, b1, c });
+            */
+            #region старый варик
+            
+            // метод с добавлением огромного числа вершин
             //добавляем новые точки в массив
             this.Verts.Add(A1);//count-2
             this.Verts.Add(B1);//count-1
@@ -261,8 +298,8 @@ namespace KUBIZATOR
             this.Polys.Add(new List<int> { Verts.Count - 2, Verts.Count - 1, Verts.Count });
             this.Polys.Add(new List<int> { Verts.Count - 2,b, Verts.Count - 1});
             this.Polys.Add(new List<int> {Verts.Count,Verts.Count-1,c});
-
-
+            
+            #endregion
 
 
         }
@@ -445,6 +482,8 @@ namespace KUBIZATOR
             PathToObject = Path;
             Verts.Clear(); Polys.Clear();
             string[] Lines = File.ReadAllLines(Path);
+            
+            //считывание файла в массивы точек и полигонов
             foreach (string Line in Lines)
             {
                 //если строка начинается с v, то записываем новую вершину в массив
@@ -469,6 +508,8 @@ namespace KUBIZATOR
 
 
             }
+
+            //попытка триангулировать полигоны
             switch (PolysMaxDimension())
             {
                 case 3://максимальное число вершин в полигоне 3
@@ -485,6 +526,8 @@ namespace KUBIZATOR
                     break;
 
             }
+
+            //получение размера модели
             GetSize();
 
         }
