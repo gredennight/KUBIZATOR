@@ -706,20 +706,20 @@ namespace KUBIZATOR
         /// <param name="matrix">сама матрица</param>
         /// <param name="color">цвет заполненных ячеек</param>
         /// <param name="count">номер файла</param>
-        public static void DrawArray(List<List<int>>matrix, Color color,int count)
+        public static void DrawArray(List<List<int>> matrix, Color color, int count)
         {
             Bitmap bitmap = new Bitmap(Convert.ToInt32(1024), Convert.ToInt32(1024), System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             Graphics g = Graphics.FromImage(bitmap);
             //команды рисования
             g.Clear(Color.White);
-            double step=1024/matrix.Count;
-            for(int h = 0; h < matrix.Count; h++)
+            double step = 1024 / matrix.Count;
+            for (int h = 0; h < matrix.Count; h++)
             {
-                for(int w = 0; w < matrix[h].Count; w++)
+                for (int w = 0; w < matrix[h].Count; w++)
                 {
-                    if(matrix[h][w] != 0)
+                    if (matrix[h][w] != 0)
                     {
-                        g.FillRectangle(Brushes.Black,Convert.ToInt32( step * w),Convert.ToInt32( 1024 - step * h),Convert.ToInt32( step), Convert.ToInt32(step));
+                        g.FillRectangle(Brushes.Black, Convert.ToInt32(step * w), Convert.ToInt32(1024 - step * h), Convert.ToInt32(step), Convert.ToInt32(step));
                     }
                 }
             }
@@ -728,6 +728,7 @@ namespace KUBIZATOR
             bitmap.Save(temp, ImageFormat.Png);
 
         }
+        #region
         /*
         public static void DrawBlockLayers(List<BlockInfo> blocks,Color color)
         {
@@ -751,5 +752,47 @@ namespace KUBIZATOR
             bitmap.Save(temp, ImageFormat.Png);
         }
         */
+        #endregion
+        /// <summary>
+        /// Отрисовать массив кубов на картинке
+        /// </summary>
+        /// <param name="Blocks">Массив кубов формата [z][y][x]</param>
+        /// <param name="top">цвет верхней грани</param>
+        /// <param name="left">цвет левой грани</param>
+        /// <param name="right">цвет правой грани</param>
+        public static void DrawVisual(List<List<List<int>>> Blocks,Color top, Color left, Color right)
+        {
+            //разрешение картинки, соотношение буду использовать 4:3
+            int height = 1200, widht = 800;
+
+            //начальные координаты сетки
+            Point start = new Point(widht/2, height/2);
+
+            //отступы по координатам
+            int hstep = (height / 2) / 2 * Blocks.Count;
+            int wstep = widht / 2 * Blocks.Count;
+            int zstep = 2 * hstep;
+            
+        }
+
+        /// <summary>
+        /// преобразование 3д координат в изометрию
+        /// </summary>
+        /// <param name="x">хз что это</param>
+        /// <param name="y">аналогично</param>
+        /// <param name="z">понятия не имею</param>
+        /// <param name="start">точка начала отсчёта</param>
+        /// <param name="hstep">шаг высоты</param>
+        /// <param name="wstep">шаг широты</param>
+        /// <param name="zstep">дополнительный шаг высоты</param>
+        /// <returns></returns>
+        private static Point getIzoCoords(int x,int y,int z,Point start,int hstep,int wstep,int zstep)
+        {
+            Point IzoCoords = new Point(
+                start.X+(x-y)*wstep,
+                start.Y+(x+y)*hstep-z*zstep
+                );
+            return IzoCoords;
+        }
     }
 }

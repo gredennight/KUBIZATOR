@@ -51,6 +51,7 @@ namespace KUBIZATOR
             DrawImage.DrawArray(Color.Blue,2);
             */
             meshContainer.VoxelizeFractal();
+            
 
         }
 
